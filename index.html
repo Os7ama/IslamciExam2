@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>اختبار تجريبي في الثقافة الاسلامية</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f0f0f0;
+      direction: rtl;
+      padding: 20px;
+    }
+    .question {
+      background: #fff;
+      border: 1px solid #ccc;
+      padding: 15px;
+      margin-bottom: 20px;
+      border-radius: 10px;
+    }
+    button {
+      margin-top: 10px;
+      margin: 15px;
+      padding: 10px 40px;
+      background-color: #007bff;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    .result {
+      margin-top: 10px;
+      font-weight: bold;
+    }
+    button:disabled {
+      background-color: #aaa;
+      cursor: not-allowed;
+    }
+    textarea {
+      width: 100%;
+      margin-top: 10px;
+    }
+    .final-score {
+      margin-top: 20px;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+  <h1>اختبار صمم بكل حب من خلال سمسم</h1>
+  <h1>مع تمنياتي لكِ بالتوفيق و النجاح يا هنونتي &#128151;</h1>
+
+  <div id="questions-container"></div>
+
+  <div class="final-score">
+    <p>النقاط الإجمالية: <span id="total-score">0</span></p>
+  </div>
+
+  <!-- زر إرسال الحلول عبر البريد الإلكتروني -->
+  <div>
+    <button onclick="sendEmail()">إرسال الحلول</button>
+    <p style="justify-content: center;">Coded With Love By Ozx</p>
+  </div>
+
+  <script>
+    let totalScore = 0;
+    let userAnswers = {
+      definition: '',
+      justification: ''
+    };
+
+    // تكرار الأسئلة 5 مرات
+    const questions = [
+      {
+        type: 'multiple-choice',
+        question: 'من انواع ختم الرسالات السماوية؟',
+        options: ['حاجة البشرية للرسل', 'كل الناس مؤمنين', 'لما يتوافق مع العقل و المنطق'],
+        correctAnswer: 'حاجة البشرية للرسل',
+        points: 2.5
+      },
+      {
+        type: 'multiple-choice',
+        question: 'الدين الاسلامي',
+        options: ['ناقص', 'محرف', 'كامل'],
+        correctAnswer: 'كامل',
+        points: 2.5
+      },
+      {
+        type: 'multiple-choice',
+        question: 'من سيرة النبي (ص)',
+        options: ['زوجاته', 'مكانته', 'الخلق العظيم للنبي'],
+        correctAnswer: 'الخلق العظيم للنبي',
+        points: 2.5
+      },
+      {
+        type: 'multiple-choice',
+        question: 'من علم الله الذي تضمنة القران الكريم؟',
+        options: ['دخول مكة معتمرين', 'التنبؤ بغلبة الروم', 'الغيوب التي في القران','كل ما ذكر'],
+        correctAnswer: 'كل ما ذكر',
+        points: 2.5
+      },
+      
+      {
+        type: 'true-false',
+        question: 'من حكمة الله ان يرسل رسل يبلغون الناس بأمر ربهم؟',
+        options: ['صح', 'خطأ'],
+        correctAnswer: 'صح',
+        points: 2.5
+      },
+      {
+        type: 'true-false',
+        question: 'هل الله عزوجل لم تكفل بحفظ كتابه الكريم؟',
+        options: ['صح', 'خطأ'],
+        correctAnswer: 'خطأ',
+        points: 2.5
+      },
+      {
+        type: 'true-false',
+        question: 'من علامات النبوة للنبي محمد (ص) مخاطبة النبات و الجماد لة؟',
+        options: ['صح', 'خطأ'],
+        correctAnswer: 'صح',
+        points: 2.5
+      },
+      {
+        type: 'true-false',
+        question: 'هل كلام القران الكريم يشبه كلام البشر',
+        options: ['صح', 'خطأ'],
+        correctAnswer: 'خطأ',
+        points: 2.5
+      },
+      
+      {
+        type: 'definition',
+        question: 'ما الفرق بين النبي و الرسول؟',
+        correctAnswer: '',
+        points: 2.5
+      },
+      {
+        type: 'definition',
+        question: 'اذكر ثلاثة من معجزات النبوة و دلائلها؟',
+        correctAnswer: '',
+        points: 2.5
+      },
+      {
+        type: 'definition',
+        question: 'اذكر اربعة من المعجزات الحسية للنبي محمد(ص)؟',
+        correctAnswer: '',
+        points: 2.5
+      },
+      
+      {
+        type: 'justification',
+        question: 'اذكر مقتضيات ان رسالة محمد(ص) هي الرساله الخاتمة؟',
+        correctAnswer: '',
+        points: 2.5
+      },
+      {
+        type: 'justification',
+        question: 'لماذا يطعن بعض المستشرقين في صحة السيرة النبوية؟',
+        correctAnswer: '',
+        points: 2.5
+      },
+      {
+        type: 'justification',
+        question: 'ماهو واجب كل مسلم ومسلمة تجاة رسول الله (ص)',
+        correctAnswer: '',
+        points: 2.5
+      }
+    ];
+
+    function createQuestionElement(questionData) {
+      let questionElement = '';
+      if (questionData.type === 'multiple-choice') {
+        questionElement = `
+          <div class="question" data-points="${questionData.points}">
+            <p>${questionData.question}</p>
+            ${questionData.options.map(option => `<button onclick="checkAnswer(this, '${questionData.correctAnswer}', ${questionData.points})">${option}</button>`).join('')}
+            <div class="result"></div>
+          </div>
+        `;
+      } else if (questionData.type === 'true-false') {
+        questionElement = `
+          <div class="question" data-points="${questionData.points}">
+            <p>${questionData.question}</p>
+            <button onclick="checkAnswer(this, '${questionData.correctAnswer}', ${questionData.points})">صح</button>
+            <button onclick="checkAnswer(this, '${questionData.correctAnswer}', ${questionData.points})">خطأ</button>
+            <div class="result"></div>
+          </div>
+        `;
+      } else if (questionData.type === 'definition') {
+        questionElement = `
+          <div class="question" data-points="${questionData.points}">
+            <p>${questionData.question}</p>
+            <textarea rows="3" placeholder="اكتب إجابتك هنا..."></textarea>
+            <button onclick="checkTextAnswer(this, '${questionData.correctAnswer}', ${questionData.points})">تحقق</button>
+            <div class="result"></div>
+          </div>
+        `;
+      } else if (questionData.type === 'justification') {
+        questionElement = `
+          <div class="question" data-points="${questionData.points}">
+            <p>${questionData.question}</p>
+            <textarea rows="3" placeholder="اكتب إجابتك هنا..."></textarea>
+            <button onclick="checkTextAnswer(this, '${questionData.correctAnswer}', ${questionData.points})">تحقق</button>
+            <div class="result"></div>
+          </div>
+        `;
+      }
+      return questionElement;
+    }
+
+    function loadQuestions() {
+      const container = document.getElementById('questions-container');
+      for (let i = 0; i < 1; i++) { // تكرار الأسئلة 5 مرات
+        questions.forEach(questionData => {
+          container.innerHTML += createQuestionElement(questionData);
+        });
+      }
+    }
+
+    function checkAnswer(button, correctAnswer, points) {
+      const resultDiv = button.parentElement.querySelector('.result');
+      const answer = button.textContent.trim();
+      if (answer === correctAnswer) {
+        resultDiv.textContent = 'إجابة صحيحة';
+        resultDiv.style.color = 'green';
+        totalScore += points;
+        updateTotalScore();
+      } else {
+        resultDiv.textContent = 'إجابة خاطئة';
+        resultDiv.style.color = 'red';
+      }
+    }
+
+    function checkTextAnswer(button, correctText, points) {
+      const container = button.parentElement;
+      const textarea = container.querySelector('textarea');
+      const resultDiv = container.querySelector('.result');
+      const userAnswer = textarea.value.trim();
+      if (userAnswer === '') {
+        resultDiv.textContent = 'الرجاء كتابة إجابة أولاً';
+        resultDiv.style.color = 'orange';
+        return;
+      }
+      if (userAnswer.includes(correctText)) {
+        resultDiv.textContent = 'إجابة صحيحة';
+        resultDiv.style.color = 'green';
+        totalScore += points;
+        updateTotalScore();
+      } else {
+        resultDiv.textContent = 'إجابة غير صحيحة';
+        resultDiv.style.color = 'red';
+      }
+
+      // تخزين الإجابات لتحديد الحلول المرسلة عبر البريد الإلكتروني
+      if (container.querySelector('p').textContent.includes('عرّف')) {
+        userAnswers.definition = userAnswer;
+      } else if (container.querySelector('p').textContent.includes('اذكر')) {
+        userAnswers.justification = userAnswer;
+      }
+    }
+
+    function updateTotalScore() {
+      document.getElementById('total-score').textContent = totalScore;
+    }
+
+    function sendEmail() {
+      const subject = 'حلول اختبار الاسلامية التجريبي';
+      const body = `الطالبة الشطورة الامورة : هنونتي حبيبي،
+
+يرجى العثور على الإجابات التالية:
+
+التعريف:
+${userAnswers.definition}
+
+التعليل:
+${userAnswers.justification}
+
+إجمالي النقاط: ${totalScore}`;
+
+      // فتح بريد إلكتروني مع الموضوع والنص
+      window.location.href = `mailto:osamaalsaadi555@gmail.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+    }
+
+    // تحميل الأسئلة عند تحميل الصفحة
+    window.onload = loadQuestions;
+  </script>
+</body>
+</html>
